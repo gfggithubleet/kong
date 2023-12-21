@@ -1,0 +1,9 @@
+#!/bin/sh
+
+env KONG_NGINX_WORKER_PROCESSES=3 \
+    KONG_TRACING_INSTRUMENTATIONS=all \
+    KONG_TRACING_SAMPLING_RATE=1.0 \
+    KONG_LOG_LEVEL=info \
+    KONG_PLUGINS=vector,opentelemetry \
+    KONG_NGINX_HTTP_LUA_CAPTURE_ERROR_LOG=32m \
+    kong restart

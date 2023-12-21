@@ -1,0 +1,36 @@
+[sources.otel_http]
+type = "http_server"
+address = "0.0.0.0:4318"
+strict_path = false
+decoding.codec = "protobuf"
+decoding.protobuf.desc_file = "/etc/vector/trace.desc"
+decoding.protobuf.message_type = "opentelemetry.proto.trace.v1.TracesData"
+
+[transforms.convert_ids]
+type = "remap"
+inputs = [ "otel_http" ]
+source = '''
+. = map_values(., true) -> |value| {
+                      if is_object(value) {
+                         if exists(value.trace_id) { value.trace_id, err = encode_base16(value.trace_id) }
+                         if exists(value.parent_span_id) { value.parent_span_id, err = encode_base16(value.parent_span_id) }
+                         if exists(value.span_id) { value.span_id, err = encode_base16(value.span_id) }
+                      }
+                      value
+}
+'''
+
+[sources.log_http]
+type = "http_server"
+address = "0.0.0.0:3992"
+strict_path = false
+
+[transforms.log_json]
+type = "remap"
+inputs = [ "log_http" ]
+source = "."
+
+[sinks.console]
+type = "console"
+inputs = [ "convert_ids", "log_json" ]
+encoding.codec = "json"
