@@ -18,6 +18,7 @@ local FLAVOR_TO_MODULE = {
   traditional            = "kong.router.traditional",
   expressions            = "kong.router.expressions",
   traditional_compatible = "kong.router.compat",
+  radix                  = "kong.router.radix"
 }
 
 

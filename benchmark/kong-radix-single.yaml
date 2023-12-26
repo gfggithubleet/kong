@@ -1,0 +1,17 @@
+_format_version: "3.0"
+services:
+- name: example-service
+  host: mockbin.org
+  port: 80
+  protocol: http
+  routes:
+  - name: example-route
+    path_handling: v0
+    paths:
+      - /users/{id}/profile-{year}.{format}
+    plugins:
+    - name: pre-function
+      config:
+        access:
+        - |
+          kong.response.exit(200, { params = kong.request.get_uri_captures() })

@@ -1,0 +1,5 @@
+# Benchmark
+
+```
+$ ./bench.sh
+```
